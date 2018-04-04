@@ -3,6 +3,22 @@
 require_once("config.php");
 require_once("dbi_ini.php");
 
+
+$qupd = "CREATE TABLE IF NOT EXISTS `links` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `link` text NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ";
+$mysqli->query($qupd);
+$getData = "SHOW TABLES";
+if ($res = $mysqli->query($getData)) {
+    while ($row = $res->fetch_assoc()) {
+        print_r($row);
+        print "<br />";
+    }
+}
+exit();
+
 $getData = "SELECT * FROM links ORDER BY RAND() LIMIT 1;";
 $linkdata = array();
 if ($res = $mysqli->query($getData)) {
