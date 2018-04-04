@@ -26,7 +26,7 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta charset="UTF-8">
-<title>Ucoz rt</title>
+<title>Mediaredirector</title>
 <script type="text/javascript" src="/js/jquery-2.1.3.min.js"></script>
 <script type="text/javascript" src="/js/bootstrap.js"></script>
 <link rel='stylesheet' href='/css/bootstrap.css' type='text/css' media='all'>
