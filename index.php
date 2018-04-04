@@ -3,28 +3,6 @@
 require_once("config.php");
 require_once("dbi_ini.php");
 
-
-//$qupd = "CREATE TABLE IF NOT EXISTS `stats` (
-//  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-//  `linkid` text NOT NULL DEFAULT '',
-//  `cnt` INT( 1 ) NOT NULL DEFAULT '1',
-//  `date` int(10) NOT NULL DEFAULT '0',
-//  PRIMARY KEY (`id`)
-//) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ";
-//$mysqli->query($qupd);
-//$qupd = "INSERT INTO `links` (`id`, `link`) VALUES
-//(1, 'mail.ru'),
-//(2, 'yandex.ru')";
-//$mysqli->query($qupd);
-//$getData = "SHOW TABLES";
-//if ($res = $mysqli->query($getData)) {
-//    while ($row = $res->fetch_assoc()) {
-//        print_r($row);
-//        print "<br />";
-//    }
-//}
-//exit();
-
 $getData = "SELECT * FROM links ORDER BY RAND() LIMIT 1;";
 $linkdata = array();
 if ($res = $mysqli->query($getData)) {

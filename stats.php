@@ -30,7 +30,22 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 <script type="text/javascript" src="/js/jquery-2.1.3.min.js"></script>
 <script type="text/javascript" src="/js/bootstrap.js"></script>
 <link rel='stylesheet' href='/css/bootstrap.css' type='text/css' media='all'>
-<link rel='stylesheet' href='/css/styles.css' type='text/css' media='all'>
+<link rel='stylesheet' href='/css/style.css' type='text/css' media='all'>
+
+<script type="text/javascript" src="/js/jquery-ui.js"></script>
+<script type="text/javascript" src="/js/moment.js"></script>
+<link rel='stylesheet' href='/css/jquery-ui.css' type='text/css' media='all'>
+
+<!-- link rel="stylesheet" type="text/css" href="/css/demo.css" />
+<link rel='stylesheet' href='/css/component.css' type='text/css' media='all'>
+<link rel="stylesheet" type="text/css" href="/css/formenu.css" /
+<script type="text/javascript" src="/js/modernizr.custom.js"></script -->
+
+<script type="text/javascript" src="/js/urlmanager.js"></script>
+<script type="text/javascript" src="/js/daterange.js"></script>
+<link rel='stylesheet' href='/css/daterangepicker.css' type='text/css' media='all'>
+<script type="text/javascript" src="/js/maindate.js"></script>
+
 </head>
 <body>
     <style>
@@ -45,32 +60,70 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
         .cell{
             padding-left: 10px;
             padding-right: 10px;
+            border: 1px solid;
         }
     </style>
 <?php
 
+function getWhereDates($dates){
+    $where = "";
+    if (count($dates) == 2){
+        $dates[0] = trim($dates[0]);
+        $dates[1] = trim($dates[1]);
+        $datesar1 = explode(".",$dates[0]);
+        $datesar2 = explode(".",$dates[1]);
+        if (count($datesar1) == 3 && count($datesar2) == 3){
+            $datesar1[1] = intval($datesar1[1]);
+            $datesar1[0] = intval($datesar1[0]);
+            $datesar2[1] = intval($datesar2[1]);
+            $datesar2[0] = intval($datesar2[0]);
+            $dfrom = mktime(0,0,0,$datesar1[1], $datesar1[0], $datesar1[2]);
+            $dto = mktime(23,59,59,$datesar2[1], $datesar2[0], $datesar2[2]);
+            $where = " AND date>=".$dfrom." AND date<=".$dto." ";
+        }
+    }
+    return $where;
+}
 if (isAdmin()){
     require_once("config.php");
     require_once("dbi_ini.php");
-    $query = "SELECT l.link, SUM(s.cnt) cn FROM links l, stats s WHERE l.id = s.linkid GROUP BY s.linkid ORDER BY cn DESC";
+    
+    
+    $dates = array();
+    if (isset($_GET['d'])){
+        $d = $_GET['d'];
+        $dates = explode("-", $d);
+    }else{
+        $t1 = time();
+        $t2 = $t1 - 86400*7;
+        $dates[0] = date("d.m.Y", $t2);
+        $dates[1] = date("d.m.Y", $t1);
+    }
+    
+    $where = getWhereDates($dates);
+    
+    $query = "SELECT l.link, SUM(s.cnt) cn FROM links l, stats s WHERE l.id = s.linkid ".$where." GROUP BY s.linkid ORDER BY cn DESC";
     $linksstat = array();
     if ($res = $mysqli->query($query)) {
         while ($row = $res->fetch_assoc()) {
             $linksstat[] = $row;
         }
     }
-
-    print "<style>
-                .cell {
-                    border: 1px solid;
-                }
-               </style>";
-    print "Статистика редиректов<br />";
-    print "<table style='border: 1px solid;'>";
-    print "<tr>
-            <th class='cell'>URL</th>
-            <th class='cell'>Всего редиректов</th>
-       </tr>";
+    ?>
+    
+    <strong>Статистика редиректов</strong><br /><br />
+    <div class="datepic" style="float: none; margin-left: 0px;">
+        <div class="fleft"><input id="datedat_interval" type="text" name="daterange" value="" class="dp-inp"/>
+        <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></div>
+    </div>
+    <br /><br />
+    <table style='border: 1px solid;'>
+    <tr>
+        <th class='cell'>URL</th>
+        <th class='cell'>Всего редиректов</th>
+    </tr>
+    
+    <?php
     $data_main = array();
     $im = 0;
     foreach($linksstat as $k=>$v){
@@ -118,5 +171,27 @@ if (isAdmin()){
 
 <?php
  }
- ?></body>
+ ?>
+    
+    <script>
+        function reloadPage(){
+            var valDates = $("#datedat_interval").val(), uidStr="";
+            var valGeo = "", frod = "", idcurr, currParams = "";
+//            if ($("#p_geo").hasClass("act")){
+//                valGeo = "1";
+//            }
+//            if ($("#frodshow").hasClass("act")){
+//                frod = "&frod=1";
+//            }
+            if ($("#curr_select a").length > 0){
+                idcurr = $("#curr_select a.act").attr("id").split("_")[1];
+                currParams = '&curr='+idcurr;
+            }
+//            if (uid != '0'){
+//                uidStr = "&uid="+uid;
+//            }
+            window.location.href = '/stats.php?d='+valDates+''+currParams;
+        }
+    </script>
+    </body>
 </html>

@@ -50,7 +50,7 @@ body {
     color: white;
 }
 .glyphicon:hover {
-    color: white;
+    color: black;
     cursor: pointer;
 }
 .tit-ic-menu {
