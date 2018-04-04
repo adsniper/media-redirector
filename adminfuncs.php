@@ -14,7 +14,7 @@
 //}
 function login($login, $password){
 //    if ($login == 'admin' && $password == 'test12345'){
-    if ($login == 'admin' && $password == 'admin12345'){
+    if ($login == 'admin' && $password == 'mBm76A8TdRw5VDtc'){
         session_start(); 
         $_SESSION['isadmin'] = 1;
         $_SESSION['log'] = $login;
